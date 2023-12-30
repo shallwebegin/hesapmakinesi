@@ -21,9 +21,9 @@ class HesapMakinesiEkrani extends StatefulWidget {
 class _HesapMakinesiEkraniState extends State<HesapMakinesiEkrani> {
   String _sonuc = "";
   String _guncelGirdi = "";
-  late double? _sayi1;
-  late double? _sayi2;
-  late String? _operator;
+  double? _sayi1;
+  double? _sayi2;
+  String? _operator;
 
   void _rakamTiklandi(String rakam) {
     setState(() {
@@ -33,7 +33,7 @@ class _HesapMakinesiEkraniState extends State<HesapMakinesiEkrani> {
 
   void _operatorTiklandi(String operator) {
     setState(() {
-      _sayi1 = double.parse(_guncelGirdi);
+      _sayi1 = double.tryParse(_guncelGirdi);
       _operator = operator;
       _guncelGirdi = "";
     });
@@ -41,29 +41,31 @@ class _HesapMakinesiEkraniState extends State<HesapMakinesiEkrani> {
 
   void _esittirTiklandi() {
     setState(() {
-      _sayi2 = double.parse(_guncelGirdi);
+      _sayi2 = double.tryParse(_guncelGirdi);
 
-      switch (_operator) {
-        case "+":
-          _sonuc = (_sayi1! + _sayi2!).toString();
-          break;
-        case "-":
-          _sonuc = (_sayi1! - _sayi2!).toString();
-          break;
-        case "*":
-          _sonuc = (_sayi1! * _sayi2!).toString();
-          break;
-        case "/":
-          _sonuc = (_sayi1! / _sayi2!).toString();
-          break;
-        default:
-          _sonuc = "Hata";
+      if (_sayi1 != null && _sayi2 != null && _operator != null) {
+        switch (_operator) {
+          case "+":
+            _sonuc = (_sayi1! + _sayi2!).toString();
+            break;
+          case "-":
+            _sonuc = (_sayi1! - _sayi2!).toString();
+            break;
+          case "*":
+            _sonuc = (_sayi1! * _sayi2!).toString();
+            break;
+          case "/":
+            _sonuc = (_sayi1! / _sayi2!).toString();
+            break;
+          default:
+            _sonuc = "Hata";
+        }
+
+        _guncelGirdi = "";
+        _sayi1 = null;
+        _sayi2 = null;
+        _operator = null;
       }
-
-      _guncelGirdi = "";
-      _sayi1 = null;
-      _sayi2 = null;
-      _operator = null;
     });
   }
 
@@ -87,7 +89,7 @@ class _HesapMakinesiEkraniState extends State<HesapMakinesiEkrani> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            _sonuc,
+            _guncelGirdi.isEmpty ? _sonuc : _guncelGirdi,
             style: TextStyle(fontSize: 24.0),
           ),
           SizedBox(height: 16.0),
